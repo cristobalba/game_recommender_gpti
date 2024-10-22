@@ -5,7 +5,9 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 dotenv.config();
 
 const app = express();
+app.use(express.static('frontend'));
 app.use(express.urlencoded({ extended: true })); // Necesario para procesar formularios
+app.use(express.json()); // Necesario para procesar JSON
 
 // Seteo del modelo y contexto
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
@@ -20,37 +22,6 @@ const model = genAI.getGenerativeModel({
                         comunidad de Steam.`
 });
 
-// Ruta para mostrar el formulario HTML
-app.get('/', (req, res) => {
-    const formHTML = `
-    <html>
-      <head>
-        <title>Recomendador de Videojuegos</title>
-      </head>
-      <body>
-        <h1>Recomendaciones personalizadas de videojuegos en Steam</h1>
-        <form action="/recommend" method="POST">
-          
-          <label for="genre">¿Qué género de videojuego estás buscando?</label><br>
-          <p>Especifica el tipo de juego que te interesa, como acción, aventura, RPG, estrategia, etc. Esto ayudará al modelo a seleccionar juegos dentro de esa categoría.</p>
-          <input type="text" name="genre" id="genre" required><br><br>
-
-          <label for="favorite">¿Cuál es tu juego favorito?</label><br>
-          <p>Menciona tu juego favorito. Esto permitirá al modelo entender mejor tus gustos y encontrar juegos similares que podrían interesarte.</p>
-          <input type="text" name="favorite" id="favorite" required><br><br>
-
-          <label for="type">¿Qué tipo de juego estás buscando (online, mundo abierto, singleplayer, etc.)?</label><br>
-          <p>Indica si prefieres juegos online, de mundo abierto, para un solo jugador o cualquier otra característica importante. Esto ayudará al modelo a filtrar juegos de acuerdo a tu estilo de juego.</p>
-          <input type="text" name="type" id="type" required><br><br>
-
-          <button type="submit">Enviar</button>
-        </form>
-      </body>
-    </html>
-    `;
-    res.send(formHTML);  // Enviar el HTML como respuesta
-});
-
 // Ruta para procesar las respuestas del formulario y generar recomendaciones
 app.post('/recommend', async (req, res) => {
     const { genre, favorite, type } = req.body;
@@ -59,7 +30,6 @@ app.post('/recommend', async (req, res) => {
     const userInput = `
       Estoy buscando un videojuego del género ${genre}. 
       Mi juego favorito es ${favorite} y estoy buscando un juego que sea ${type}.
-      
     `;
 
     try {
@@ -75,27 +45,18 @@ app.post('/recommend', async (req, res) => {
         const result = await chat.sendMessage(userInput); // Envía las respuestas del formulario al modelo de IA
         const aiResponse = result.response.text(); // Recibe la respuesta de la IA
 
-        // Convierte la respuesta en una lista HTML
+        // Convierte la respuesta en una lista de recomendaciones
         const gamesList = aiResponse
             .split('\n')  // Asume que cada juego está separado por una nueva línea
-            .filter(line => line.trim() !== '')  // Elimina líneas vacías
-            .map(game => `<li>${game}</li>`)     // Convierte cada línea en un elemento de lista
-            .join('');                          // Une todos los elementos de lista
+            .filter(line => line.trim() !== '');  // Elimina líneas vacías
 
-        // Muestra las recomendaciones en la página web en formato de lista
-        res.send(`
-          <html>
-            <head><title>Recomendaciones</title></head>
-            <body>
-              <h1>Recomendaciones basadas en tus respuestas</h1>
-              <ul>${gamesList}</ul>  <!-- Muestra las recomendaciones como una lista -->
-              <a href="/">Volver al formulario</a>
-            </body>
-          </html>
-        `);
+        // Envia la lista de recomendaciones como JSON
+        res.json({
+            recommendations: gamesList
+        });
     } catch (error) {
         console.error("Error al procesar el chat:", error);
-        res.status(500).send("Ocurrió un error al obtener recomendaciones.");
+        res.status(500).json({ error: "Ocurrió un error al obtener recomendaciones." });
     }
 });
 

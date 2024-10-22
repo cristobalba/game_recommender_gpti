@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recomendador de Videojuegos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Recomendador de Videojuegos en Steam 🎮</h1>
+        <form id="recommendationForm">
+            <label for="genre">Género de videojuego:</label>
+            <input type="text" id="genre" name="genre" required placeholder="Acción, Aventura, RPG...">
+            
+            <label for="favorite">Tu juego favorito:</label>
+            <input type="text" id="favorite" name="favorite" required placeholder="Ejemplo: Dark Souls">
+
+            <label for="type">Tipo de juego:</label>
+            <input type="text" id="type" name="type" required placeholder="Online, Singleplayer, Mundo Abierto...">
+            
+            <button type="submit">Enviar</button>
+        </form>
+
+        <div id="recommendations" class="recommendations">
+            <h2>Recomendaciones</h2>
+            <ul id="recommendationsList"></ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
