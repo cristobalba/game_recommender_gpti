@@ -1,7 +1,9 @@
 # game_recommender_gpti
 
 ## Ejecutar en local
-Una vez teniendo clonado el repositorio, desde la terminal ir al directorio raíz del repositorio 'game_recommender_gpti' y ejecutar el comando **node app.js**, luego abrir un navegador y acceder a **http://localhost:3000** para poder interactuar con la aplicación.
+Una vez teniendo clonado el repositorio, desde la terminal ir al directorio raíz del repositorio 'game_recommender_gpti', crear un archivo **.env** para guardar la variable de entorno **API_KEY** y asignarle la api key entregada por Gemini. Luego, ejecutar el comando **node app.js**, y después abrir un navegador para acceder a **http://localhost:3000** y poder interactuar con la aplicación.
+
+
 
 ## Referencias
 
