@@ -24,24 +24,28 @@ router.post('/recommend', async (req, res) => {
 
     // Generate personalized recommendation using the AI service
     const aiResponse = await generateRecommendation(user, userInput);
+    console.log("aiResponse: ", aiResponse);
 
     // Process the AI response
     const recommendationsData = aiResponse
       .split('\n') // Split response into lines
       .filter(line => line.trim() !== '') // Remove empty lines
       .map(line => {
-          // Remove leading "* " if present
-          const trimmedLine = line.startsWith('* ') ? line.slice(2) : line;
+          // Remove leading "- " if present
+          const trimmedLine = line.startsWith('- ') ? line.slice(2) : line;
+
+          // Remove **
+          const cleanLine = trimmedLine.replace('**', '')
 
           // Split the line at the first colon to separate title and description
-          const colonIndex = trimmedLine.indexOf(':');
+          const colonIndex = cleanLine.indexOf(':');
           if (colonIndex === -1) {
               // Handle lines without a colon
-              return { title: trimmedLine.trim(), description: "" };
+              return { title: cleanLine.trim(), description: "" };
           }
 
-          const title = trimmedLine.slice(0, colonIndex).trim();
-          const description = trimmedLine.slice(colonIndex + 1).trim();
+          const title = cleanLine.slice(0, colonIndex).trim();
+          const description = cleanLine.slice(colonIndex + 1).trim();
 
           return { title, description };
       });
