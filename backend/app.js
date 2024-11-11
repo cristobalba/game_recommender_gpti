@@ -1,6 +1,6 @@
 const express = require('express');
 const { sequelize } = require('./models');
-const auth = require('./middleware/auth.js');
+const auth = require('./middlewares/auth.js');
 const apiRoutes = require('./routes/api.js');
 const userRoutes = require('./routes/user.js');
 const dotenv = require('dotenv');

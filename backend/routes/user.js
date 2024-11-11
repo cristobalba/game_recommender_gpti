@@ -1,10 +1,9 @@
 const express = require('express');
 const { User } = require('../models');
-const auth = require('../middleware/auth.js');
 
 const router = express.Router();
 
-router.post('/register', auth, async (req, res) => {
+router.post('/register', async (req, res) => {
     const auth0Id = req.auth.sub;
 
     try {

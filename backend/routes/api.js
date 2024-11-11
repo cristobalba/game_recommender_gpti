@@ -63,7 +63,7 @@ router.post('/recommend', async (req, res) => {
   }
 });
 
-router.post('/feedback', auth, async (req, res) => {
+router.post('/feedback', async (req, res) => {
   const auth0Id = req.auth.sub;
   const user = await User.findOne({ where: { auth0Id } });
   const { feedbacks } = req.body;
