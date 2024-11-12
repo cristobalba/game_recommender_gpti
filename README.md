@@ -41,7 +41,7 @@ Donde `user` corresponde a la instancia del usuario de la base de datos.
   "user": {user}
 }
 ```
-Donde `user` corresponde a la instancia del usuario de la base de datos.
+Donde `user` corresponde a la instancia del usuario creado.
 
 - **500 Internal Server Error**: Si ocurre un error al procesar la solicitud se retorna la siguiente respuesta:
 ```json
@@ -103,11 +103,12 @@ La solicitud debe presentar el campo `"feedbacks"` con el siguiente contenido:
       "rating": {rating},
       "comment": {comment}
     },
+    ...
   ]
 }
 ```
 
-Donde `recommendationId` es un `int` con el id de la recomendación a la que se entrega feedback, `rating` es un `int` con la valoración de la recomendación y `comment` es un `str` con el comentario sobre la recomendación.
+Donde `recommendationId` es un `int` con el id de la recomendación a la que se entrega feedback, `rating` es un `int` con la valoración de la recomendación y `comment` es un `str` con el comentario sobre la recomendación. Es importante que cada elemento de la lista `"feedbacks"` corresponde a una retroalimentación a un juego específico.
 
 #### Respuesta
 - **201 Created**: Si la solicitud se realiza de forma exitosa, se retorna la siguiente respuesta:
