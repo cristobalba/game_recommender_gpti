@@ -24,7 +24,7 @@ router.post('/recommend', async (req, res) => {
 
     // Generate personalized recommendation using the AI service
     const aiResponse = await generateRecommendation(user, userInput);
-    console.log("aiResponse: ", aiResponse);
+    // console.log("aiResponse: ", aiResponse);
 
     // Process the AI response
     const recommendationsData = aiResponse
@@ -35,7 +35,7 @@ router.post('/recommend', async (req, res) => {
           const trimmedLine = line.startsWith('- ') ? line.slice(2) : line;
 
           // Remove **
-          const cleanLine = trimmedLine.replace('**', '')
+          const cleanLine = trimmedLine.replace(/\*\*/g, "");
 
           // Split the line at the first colon to separate title and description
           const colonIndex = cleanLine.indexOf(':');

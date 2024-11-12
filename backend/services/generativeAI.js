@@ -1,5 +1,4 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
-const { GoogleAICacheManager } = require('@google/generative-ai/server');
 const dotenv = require('dotenv');
 const { Recommendation, Feedback } = require('../models');
 
@@ -57,6 +56,7 @@ const generateRecommendation = async (user, userInput) => {
   try {
     // Retrieve user feedback
     const userFeedback = await formatUserFeedback(user);
+    // console.log("userFeedback:", userFeedback);
 
     // Start chat
     const chat = model.startChat({
