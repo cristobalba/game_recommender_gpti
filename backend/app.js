@@ -4,10 +4,13 @@ const auth = require('./middlewares/auth.js');
 const apiRoutes = require('./routes/api.js');
 const userRoutes = require('./routes/user.js');
 const dotenv = require('dotenv');
+const cors = require('cors');
 
 dotenv.config();
 
 const app = express();
+
+app.use(cors());
 
 app.use(express.json()); // Parses incoming JSON requests
 app.use(express.urlencoded({ extended: true })); // Parses URL-encoded requests
