@@ -1,19 +1,33 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import apiRouter from './routes/api.js';
+const express = require('express');
+const { sequelize } = require('./models');
+const auth = require('./middlewares/auth.js');
+const apiRoutes = require('./routes/api.js');
+const userRoutes = require('./routes/user.js');
+const dotenv = require('dotenv');
 
 dotenv.config();
 
 const app = express();
 
-// Middleware para procesar formularios y JSON
-app.use(express.urlencoded({ extended: true })); // Necesario para procesar formularios
-app.use(express.json()); // Necesario para procesar JSON
+app.use(express.json()); // Parses incoming JSON requests
+app.use(express.urlencoded({ extended: true })); // Parses URL-encoded requests
 
-// Montar el enrutador en la ruta /api
-app.use('/api', apiRouter);
+app.use('/api', auth, apiRoutes);
+app.use('/user', auth, userRoutes);
 
-// Configurar el servidor para que escuche en el puerto 3000
-app.listen(process.env.APP_PORT, () => {
-    console.log(`Server listening on port ${process.env.APP_PORT}`);
-});
+const PORT = process.env.PORT || 3000;
+
+// Test database connection and sync models
+sequelize.authenticate()
+  .then(() => {
+    console.log('Database connected...');
+    return sequelize.sync();
+  })
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
