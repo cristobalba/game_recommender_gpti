@@ -7,7 +7,9 @@ const router = express.Router();
 router.post('/recommend', async (req, res) => {
   try {
     const auth0Id = req.auth.sub;
+    console.log("auth0Id:", auth0Id);
     const user = await User.findOne({ where: { auth0Id } });
+    console.log("user:", user);
 
     const { genre, favorite, type } = req.body;
 
