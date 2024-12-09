@@ -33,23 +33,23 @@ router.post('/recommend', async (req, res) => {
       .split('\n') // Split response into lines
       .filter(line => line.trim() !== '') // Remove empty lines
       .map(line => {
-          // Remove leading "- " if present
-          const trimmedLine = line.startsWith('- ') ? line.slice(2) : line;
+        // Remove leading "- " if present
+        const trimmedLine = line.startsWith('- ') ? line.slice(2) : line;
 
-          // Remove **
-          const cleanLine = trimmedLine.replace(/\*\*/g, "");
+        // Remove **
+        const cleanLine = trimmedLine.replace(/\*\*/g, "");
 
-          // Split the line at the first colon to separate title and description
-          const colonIndex = cleanLine.indexOf(':');
-          if (colonIndex === -1) {
-              // Handle lines without a colon
-              return { title: cleanLine.trim(), description: "" };
-          }
+        // Split the line at the first colon to separate title and description
+        const colonIndex = cleanLine.indexOf(':');
+        if (colonIndex === -1) {
+          // Handle lines without a colon
+          return { title: cleanLine.trim(), description: "" };
+        }
 
-          const title = cleanLine.slice(0, colonIndex).trim();
-          const description = cleanLine.slice(colonIndex + 1).trim();
+        const title = cleanLine.slice(0, colonIndex).trim();
+        const description = cleanLine.slice(colonIndex + 1).trim();
 
-          return { title, description };
+        return { title, description };
       });
 
     // Create recommendations in the database
@@ -86,7 +86,7 @@ router.post('/feedback', async (req, res) => {
 
   // Iterate over each feedback to validate
   // feedbacks.forEach((feedback, index) => {
-    for (const [_, feedback] of feedbacks.entries()) {
+  for (const [_, feedback] of feedbacks.entries()) {
     const { recommendationId, rating } = feedback;
 
     // Check for required fields
@@ -147,6 +147,25 @@ router.post('/feedback', async (req, res) => {
     }
 
     res.status(500).json({ error: "An error occurred while submitting feedbacks." });
+  }
+});
+
+
+router.get('/recommendations', async (req, res) => {
+  try {
+    const auth0Id = req.auth.sub;
+    const user = await User.findOne({ where: { auth0Id } });
+    const recs = await Recommendation.findAll({
+      where: { userId: user.id },
+      attributes: ['gameTitle', 'gameDescription']
+    });
+    if (recs) {
+      return res.status(200).json(recs);
+    }
+
+  } catch (error) {
+    console.error("Error getting history of recommendations:", error);
+    res.status(500).json({ error: "An error occurred while getting recommendations." });
   }
 });
 
