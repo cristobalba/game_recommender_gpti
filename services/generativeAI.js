@@ -81,8 +81,10 @@ const generateRecommendation = async (user, userInput) => {
       throw new Error('Chat instance is not initialized.');
     }
 
-    // Incluye el feedback como contexto en el historial
-    await chatInstance.sendMessage(userFeedback);
+    if (userFeedback) {
+      // Incluye el feedback como contexto en el historial
+      await chatInstance.sendMessage(userFeedback);
+    }
 
     const result = await chatInstance.sendMessage(userInput);
     const aiResponse = result.response.text();
